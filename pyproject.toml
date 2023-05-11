@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "pySigma-backend-QRadar-AQL"
+version = "0.1.0"
+description = "pySigma QRadarAQL backend"
+authors = ["IBM <noaakless@gmail.com>"]
+license = "MIT"
+repository = "https://github.com/IBM/pySigma-backend-QRadar-AQL"
+packages = [
+    { include = "sigma" }
+]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+pysigma = "^0.9.8"
+
+[tool.poetry.dev-dependencies]
+pytest = "^7.3.1"
+pytest-cov = "^4.0.0"
+coverage = "^7.2.5"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
