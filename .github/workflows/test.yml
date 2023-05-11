@@ -36,7 +36,7 @@ jobs:
         uses: schneegans/dynamic-badges-action@v1.1.0
         with:
           auth: ${{ secrets.GIST_SECRET }}
-          gistID: https://gist.github.com/noaakl/5059eb0cfbb795a57555c0ea20bdef2a
+          gistID: https://gist.github.ibm.com/Noaa-Kless/2a6a370ae37067d0c28be98eeeee4f61
           filename: IBM-pySigma-backend-QRadar-AQL.json
           label: Coverage
           message: ${{ env.COVERAGE }}
