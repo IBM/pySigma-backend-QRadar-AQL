@@ -61,8 +61,8 @@ badges = (
     "/test.yml/badge.svg)](https://github.com/IBM/pySigma-backend-QRadar-AQL/actions"
     "/workflows/test.yml)\n"
     "![Coverage Badge](https://img.shields.io/endpoint?url=https://gist"
-    ".githubusercontent.com/IBM/https://gist.github.com/noaakl"
-    "/5059eb0cfbb795a57555c0ea20bdef2a/raw/IBM-pySigma-backend-QRadar-AQL.json)\n"
+    ".githubusercontent.com/IBM/https://gist.github.ibm.com/Noaa-Kless"
+    "/2a6a370ae37067d0c28be98eeeee4f61/raw/IBM-pySigma-backend-QRadar-AQL.json)\n"
     "![Status](https://img.shields.io/badge/Status-release-green)\n"
 )
 

@@ -1,5 +1,5 @@
 [![Tests](https://github.com/IBM/pySigma-backend-QRadar-AQL/actions/workflows/test.yml/badge.svg)](https://github.com/IBM/pySigma-backend-QRadar-AQL/actions/workflows/test.yml)
-![Coverage Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/IBM/https://gist.github.com/noaakl/5059eb0cfbb795a57555c0ea20bdef2a/raw/IBM-pySigma-backend-QRadar-AQL.json)
+![Coverage Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/IBM/https://gist.github.ibm.com/Noaa-Kless/2a6a370ae37067d0c28be98eeeee4f61/raw/IBM-pySigma-backend-QRadar-AQL.json)
 ![Status](https://img.shields.io/badge/Status-release-green)
 
 
