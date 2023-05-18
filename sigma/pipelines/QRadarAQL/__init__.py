@@ -3,6 +3,6 @@ from .QRadarAQL_fields import QRadarAQL_fields_pipeline
 
 
 pipelines = {
-    "QRadarAQL_payload": QRadarAQL_payload_pipeline,
-    "QRadarAQL_fields": QRadarAQL_fields_pipeline,
+    "qradar-aql-payload": QRadarAQL_payload_pipeline,
+    "qradar-aql-fields": QRadarAQL_fields_pipeline,
 }
