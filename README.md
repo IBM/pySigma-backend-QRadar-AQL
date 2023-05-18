@@ -26,12 +26,15 @@ sigma plugin install QRadarAQL
 
 ## Usage
 
-### Usage via [Sigma-CLI](https://github.com/SigmaHQ/sigma-cli#usage)
-Use `QRadarAQL` as backend, and one of `QRadarAQL_fields` and `QRadarAQL_payload` as pipeline.
+### Usage via Sigma-CLI
+Convert Sigma rules to AQL by using `ibm-qradar-aql` as backend, and one of `qradar-aql-fields` and `qradar-aql-payload` as pipeline:
+```
+sigma convert -t ibm-qradar-aql -p <qradar-aql-fields | qradar-aql-payload> <rule path> -o <output file name>
+```
 
 ##### Input example:
 ```
-sigma convert -t QRadarAQL -p QRadarAQL_payload rules/windows/builtin/application/win_audit_cve.yml -o output_file.txt
+sigma convert -t ibm-qradar-aql -p qradar-aql-payload rules/windows/builtin/application/win_audit_cve.yml -o output_file.txt
 ```
 
 ##### Output example:
@@ -54,9 +57,9 @@ rule = SigmaCollection.from_yaml("""
    detection:
        selection:
           CallTrace|startswith: 'C:\Windows\System32\ntdll.dll+'
-           GrantedAccess:
-               - '0x1028'
-               - '0x1fffff'
+          GrantedAccess:
+            - '0x1028'
+            - '0x1fffff'
        condition: selection
 """)
 print(QRadarAQLBackend(pipeline()).convert(rule))

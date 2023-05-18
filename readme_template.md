@@ -27,29 +27,20 @@ sigma plugin install QRadarAQL
 ## Usage
 
 ### Usage via Sigma-CLI
-1. Install [Sigma-CLI](https://github.com/SigmaHQ/sigma-cli#usage)
+Convert Sigma rules to AQL by using `ibm-qradar-aql` as backend, and one of `qradar-aql-fields` and `qradar-aql-payload` as pipeline:
+```
+sigma convert -t ibm-qradar-aql -p <qradar-aql-fields | qradar-aql-payload> <rule path> -o <output file name>
+```
 
+##### Input example:
+```
+sigma convert -t ibm-qradar-aql -p qradar-aql-payload rules/windows/builtin/application/win_audit_cve.yml -o output_file.txt
+```
 
-2. Install `ibm-qradar-aql` plugin:
-    ```
-    sigma plugin install ibm-qradar-aql
-    ```
-
-3. Convert Sigma rules to AQL by using `ibm-qradar-aql` as backend, and one of 
-   `qradar-aql-fields` and `qradar-aql-payload` as pipeline:
-    ```
-   sigma convert -t ibm-qradar-aql -p <qradar-aql-fields | qradar-aql-payload> <rule path> -o <output file name>
-   ```
-
-    ##### Input example:
-    ```
-    sigma convert -t ibm-qradar-aql -p qradar-aql-payload rules/windows/builtin/application/win_audit_cve.yml -o output_file.txt
-    ```
-    
-    ##### Output example:
-    ```
-    ["SELECT * FROM events WHERE devicetype=12 AND (LOWER(UTF8(payload)) LIKE '%microsoft-windows-audit-cve%' OR LOWER(UTF8(payload)) LIKE '%audit-cve%') AND 'Event ID'=1"]
-    ```
+##### Output example:
+```
+["SELECT * FROM events WHERE devicetype=12 AND (LOWER(UTF8(payload)) LIKE '%microsoft-windows-audit-cve%' OR LOWER(UTF8(payload)) LIKE '%audit-cve%') AND 'Event ID'=1"]
+```
 
 ### Usage for developers
 
