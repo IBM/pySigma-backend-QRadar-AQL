@@ -181,7 +181,7 @@ class QRadarAQLBackend(TextQueryBackend):
     ### Quoting
 
     field_quote: ClassVar[
-        str] = "'"  # Character used to quote field characters if field_quote_pattern
+        str] = '"'  # Character used to quote field characters if field_quote_pattern
     # doesn't match
     field_quote_pattern: ClassVar[Pattern] = re.compile(
         "^\S+$|.*\([^()]*\).*")  # Quote field names if this pattern

@@ -169,7 +169,7 @@ def test_QRadar_field_name_with_whitespace(QRadar_backend: QRadarAQLBackend):
                 condition: sel
         """)
     ) == [
-               "SELECT * FROM events WHERE 'field name'='value'"
+               'SELECT * FROM events WHERE "field name"=\'value\''
            ]
 
 

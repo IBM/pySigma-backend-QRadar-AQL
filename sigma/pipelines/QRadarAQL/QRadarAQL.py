@@ -684,7 +684,7 @@ class QRadarFieldMappingTransformation(FieldMappingTransformation):
             mappings = [mappings]
         for i, mapping in enumerate(mappings):
             if not parentheses_and_no_spacing.match(mapping):
-                mappings[i] = "'" + mapping + "'"
+                mappings[i] = '"' + mapping + '"'
         return mappings
 
 

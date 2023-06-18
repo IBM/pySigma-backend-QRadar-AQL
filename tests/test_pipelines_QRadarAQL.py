@@ -25,8 +25,8 @@ def test_qradar_field_mapping_unstructured_field():
                     condition: sel
             """)
         ) == [
-                   "SELECT * FROM events WHERE devicetype=12 AND Command='val1' AND "
-                   "'Process Path'='val2' AND LOWER(URL) LIKE '%val3%'"
+                   'SELECT * FROM events WHERE devicetype=12 AND Command=\'val1\' AND '
+                   '"Process Path"=\'val2\' AND LOWER(URL) LIKE \'%val3%\''
                ]
 
 
@@ -109,7 +109,7 @@ def test_qradar_list_field_mapping():
             """)
         ) == [
                    "SELECT * FROM events WHERE devicetype=12 AND Command='val1' AND "
-                   "('Process Path'='val2' OR 'Process Name'='val2')"
+                   "(\"Process Path\"='val2' OR \"Process Name\"='val2')"
                ]
 
 
@@ -127,9 +127,8 @@ def test_qradar_concat():
                     condition: sel
             """)
         ) == [
-                   "SELECT * FROM events WHERE CONCAT("
-                   "'file directory', '/', filename)='C:\Program "
-                   "Files\Dell\SARemediation\plugin\log.dll'"
+                    "SELECT * FROM events WHERE CONCAT('file directory', '/', "
+                    "filename)='C:\Program Files\Dell\SARemediation\plugin\log.dll'"
                ]
 
 
@@ -245,7 +244,7 @@ def test_QRadar_host_fields_ipv6_to_cidr():
                     condition: selection
             """)
         ) == [
-                   "SELECT * FROM events WHERE LOWER('Process Path') LIKE '%/file' "
+                   "SELECT * FROM events WHERE LOWER(\"Process Path\") LIKE '%/file' "
                    "AND (INCIDR('::1/128', destinationip) OR INCIDR('fd::/16', "
                    "destinationip))"
                ]

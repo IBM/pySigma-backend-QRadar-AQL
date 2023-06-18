@@ -21,7 +21,7 @@ Further, it contains the following processing pipelines in `sigma.pipelines.QRad
 ## Installation
 Installation can be done using Sigma's plugins after installing [sigma-cli](https://github.com/SigmaHQ/sigma-cli#Installation)
 ```
-sigma plugin install QRadarAQL
+sigma plugin install ibm-qradar-aql
 ```
 
 ## Usage

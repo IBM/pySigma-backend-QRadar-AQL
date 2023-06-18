@@ -44,7 +44,7 @@ def test_QRadar_field_with_spaces():
                 - EventID
         """)
     ) == [
-               "SELECT *, 'Event ID' FROM events WHERE 'Event ID'='value'"
+               'SELECT *, "Event ID" FROM events WHERE "Event ID"=\'value\''
            ]
 
 
@@ -88,7 +88,7 @@ def test_QRadar_in_expression_with_int_value():
                 - EventID
         """)
     ) == [
-               "SELECT *, 'Event ID' FROM events WHERE 'Event ID' IN('1', '2')"
+               'SELECT *, "Event ID" FROM events WHERE "Event ID" IN(\'1\', \'2\')'
            ]
 
 
