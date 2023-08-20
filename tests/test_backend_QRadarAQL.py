@@ -5,12 +5,12 @@ from sigma.backends.QRadarAQL import QRadarAQLBackend
 
 
 @pytest.fixture
-def QRadar_backend():
+def aql_backend():
     return QRadarAQLBackend()
 
 
-def test_QRadar_and_expression(QRadar_backend: QRadarAQLBackend):
-    assert QRadar_backend.convert(
+def test_QRadar_and_expression(aql_backend: QRadarAQLBackend):
+    assert aql_backend.convert(
         SigmaCollection.from_yaml("""
             title: Test
             status: test
@@ -28,8 +28,8 @@ def test_QRadar_and_expression(QRadar_backend: QRadarAQLBackend):
            ]
 
 
-def test_QRadar_or_expression(QRadar_backend: QRadarAQLBackend):
-    assert QRadar_backend.convert(
+def test_QRadar_or_expression(aql_backend: QRadarAQLBackend):
+    assert aql_backend.convert(
         SigmaCollection.from_yaml("""
             title: Test
             status: test
@@ -48,8 +48,8 @@ def test_QRadar_or_expression(QRadar_backend: QRadarAQLBackend):
            ]
 
 
-def test_QRadar_and_or_expression(QRadar_backend: QRadarAQLBackend):
-    assert QRadar_backend.convert(
+def test_QRadar_and_or_expression(aql_backend: QRadarAQLBackend):
+    assert aql_backend.convert(
         SigmaCollection.from_yaml("""
             title: Test
             status: test
@@ -72,8 +72,8 @@ def test_QRadar_and_or_expression(QRadar_backend: QRadarAQLBackend):
            ]
 
 
-def test_QRadar_or_and_expression(QRadar_backend: QRadarAQLBackend):
-    assert QRadar_backend.convert(
+def test_QRadar_or_and_expression(aql_backend: QRadarAQLBackend):
+    assert aql_backend.convert(
         SigmaCollection.from_yaml("""
             title: Test
             status: test
@@ -95,8 +95,8 @@ def test_QRadar_or_and_expression(QRadar_backend: QRadarAQLBackend):
            ]
 
 
-def test_QRadar_in_expression(QRadar_backend: QRadarAQLBackend):
-    assert QRadar_backend.convert(
+def test_QRadar_in_expression(aql_backend: QRadarAQLBackend):
+    assert aql_backend.convert(
         SigmaCollection.from_yaml("""
             title: Test
             status: test
@@ -118,8 +118,8 @@ def test_QRadar_in_expression(QRadar_backend: QRadarAQLBackend):
            ]
 
 
-def test_QRadar_regex_query(QRadar_backend: QRadarAQLBackend):
-    assert QRadar_backend.convert(
+def test_QRadar_regex_query(aql_backend: QRadarAQLBackend):
+    assert aql_backend.convert(
         SigmaCollection.from_yaml("""
             title: Test
             status: test
@@ -137,8 +137,8 @@ def test_QRadar_regex_query(QRadar_backend: QRadarAQLBackend):
            ]
 
 
-def test_QRadar_cidr_query(QRadar_backend: QRadarAQLBackend):
-    assert QRadar_backend.convert(
+def test_QRadar_cidr_query(aql_backend: QRadarAQLBackend):
+    assert aql_backend.convert(
         SigmaCollection.from_yaml("""
             title: Test
             status: test
@@ -155,8 +155,8 @@ def test_QRadar_cidr_query(QRadar_backend: QRadarAQLBackend):
            ]
 
 
-def test_QRadar_field_name_with_whitespace(QRadar_backend: QRadarAQLBackend):
-    assert QRadar_backend.convert(
+def test_QRadar_field_name_with_whitespace(aql_backend: QRadarAQLBackend):
+    assert aql_backend.convert(
         SigmaCollection.from_yaml("""
             title: Test
             status: test
@@ -173,8 +173,8 @@ def test_QRadar_field_name_with_whitespace(QRadar_backend: QRadarAQLBackend):
            ]
 
 
-def test_QRadar_bool_value(QRadar_backend: QRadarAQLBackend):
-    assert QRadar_backend.convert(
+def test_QRadar_bool_value(aql_backend: QRadarAQLBackend):
+    assert aql_backend.convert(
         SigmaCollection.from_yaml("""
             title: Test
             status: test
@@ -191,8 +191,8 @@ def test_QRadar_bool_value(QRadar_backend: QRadarAQLBackend):
            ]
 
 
-def test_QRadar_keywords_query(QRadar_backend: QRadarAQLBackend):
-    assert QRadar_backend.convert(
+def test_QRadar_keywords_query(aql_backend: QRadarAQLBackend):
+    assert aql_backend.convert(
         SigmaCollection.from_yaml("""
             title: Test
             status: test
@@ -212,8 +212,8 @@ def test_QRadar_keywords_query(QRadar_backend: QRadarAQLBackend):
     ]
 
 
-def test_QRadar_in_expression_with_wildcard(QRadar_backend: QRadarAQLBackend):
-    assert QRadar_backend.convert(
+def test_QRadar_in_expression_with_wildcard(aql_backend: QRadarAQLBackend):
+    assert aql_backend.convert(
         SigmaCollection.from_yaml("""
         title: Test
         status: test
@@ -232,8 +232,8 @@ def test_QRadar_in_expression_with_wildcard(QRadar_backend: QRadarAQLBackend):
           "LOWER(fieldName) LIKE 'valuec%'"]
 
 
-def test_QRadar_log_sources(QRadar_backend: QRadarAQLBackend):
-    assert QRadar_backend.convert(
+def test_QRadar_log_sources(aql_backend: QRadarAQLBackend):
+    assert aql_backend.convert(
         SigmaCollection.from_yaml("""
             title: Test
             status: test
@@ -250,8 +250,8 @@ def test_QRadar_log_sources(QRadar_backend: QRadarAQLBackend):
            ]
 
 
-def test_QRadar_identical_log_sources(QRadar_backend: QRadarAQLBackend):
-    assert QRadar_backend.convert(
+def test_QRadar_identical_log_sources(aql_backend: QRadarAQLBackend):
+    assert aql_backend.convert(
         SigmaCollection.from_yaml("""
             title: Test
             status: test
@@ -268,8 +268,8 @@ def test_QRadar_identical_log_sources(QRadar_backend: QRadarAQLBackend):
            ]
 
 
-def test_QRadar_single_log_source(QRadar_backend: QRadarAQLBackend):
-    assert QRadar_backend.convert(
+def test_QRadar_single_log_source(aql_backend: QRadarAQLBackend):
+    assert aql_backend.convert(
         SigmaCollection.from_yaml("""
             title: Test
             status: test
@@ -287,8 +287,8 @@ def test_QRadar_single_log_source(QRadar_backend: QRadarAQLBackend):
            ]
 
 
-def test_QRadar_escaping_value(QRadar_backend: QRadarAQLBackend):
-    assert QRadar_backend.convert(
+def test_QRadar_escaping_value(aql_backend: QRadarAQLBackend):
+    assert aql_backend.convert(
         SigmaCollection.from_yaml("""
             title: Test
             status: test
@@ -305,8 +305,8 @@ def test_QRadar_escaping_value(QRadar_backend: QRadarAQLBackend):
            ]
 
 
-def test_QRadar_escaping_keyword(QRadar_backend: QRadarAQLBackend):
-    assert QRadar_backend.convert(
+def test_QRadar_escaping_keyword(aql_backend: QRadarAQLBackend):
+    assert aql_backend.convert(
         SigmaCollection.from_yaml("""
             title: Test
             status: test
@@ -323,8 +323,8 @@ def test_QRadar_escaping_keyword(QRadar_backend: QRadarAQLBackend):
            ]
 
 
-def test_QRadar_escaping_regex(QRadar_backend: QRadarAQLBackend):
-    assert QRadar_backend.convert(
+def test_QRadar_escaping_regex(aql_backend: QRadarAQLBackend):
+    assert aql_backend.convert(
         SigmaCollection.from_yaml("""
             title: Test
             status: test

@@ -93,7 +93,7 @@ python-versions = ">=3.6.8"
 
 [package.extras]
 diagrams = ["railroad-diagrams", "jinja2"]
-
+ 
 [[package]]
 name = "pysigma"
 version = "0.9.8"
