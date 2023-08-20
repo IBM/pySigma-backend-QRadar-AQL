@@ -472,7 +472,6 @@ field_mapping = {
     "GrantedAccess": "Granted Access",
     "Hashes": "CONCAT('MD5=', 'MD5 Hash ', 'SHA1=', 'SHA1 Hash ', 'SHA256=', 'SHA256 "
               "Hash ', 'IMPHASH=', 'IMP HASH')",
-    # "Hashes": ['MD5 Hash', 'SHA1 Hash', 'SHA256 Hash', 'File Hash'],
     "HostApplication": "Process Path",
     "HostName": "Hostname",
     "Image": ["Process Path", "Process Name"],

@@ -1,4 +1,6 @@
+import re
 import warnings
+from dataclasses import dataclass
 from typing import Union, Optional
 
 from sigma.exceptions import SigmaTransformationError
@@ -9,8 +11,13 @@ from sigma.rule import SigmaDetectionItem, SigmaDetection
 from sigma.types import SigmaRegularExpression, SigmaNull, SigmaCompareExpression, \
     SigmaNumber, SigmaString, SigmaBool, SigmaCIDRExpression, SigmaExpansion
 
-from sigma.backends.QRadarAQL.QRadarAQL import number_as_string
+# from sigma.backends.QRadarAQL.QRadarAQL import number_as_string
 from sigma.pipelines.QRadarAQL.QRadarAQL import qradar_field_mapping, base_pipeline_items
+
+
+def number_as_string(value):
+    number_string = re.compile("^[0-9%']*$")
+    return number_string.match(value)
 
 
 class ValueTypeFailureTransformation(DetectionItemFailureTransformation):
@@ -66,18 +73,21 @@ class ValueTypeFailureTransformation(DetectionItemFailureTransformation):
                     self.message.format(value_type=value_type, field=field))
 
 
+@dataclass
 class UnsupportedFieldsTransformation(DetectionItemTransformation):
     """
     Drop unsupported field to create unbound value expression using UTF8(payload).
     Raise a warning about performance issues.
     """
 
+    field_mapping: dict = None
+
     def apply_detection_item(
             self, detection_item: SigmaDetectionItem
     ) -> Optional[Union[SigmaDetection, SigmaDetectionItem]]:
         field = detection_item.field
         value = detection_item.value
-        if field not in qradar_field_mapping:
+        if field not in self.field_mapping:
             improve = (f"use a supported field instead of '{field}'" if field else
                        "specify the keyword value to a field")
             warnings.warn(
