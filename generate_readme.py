@@ -1,4 +1,4 @@
-from pySigma_QRadar_base.generate_readme_mapping import generate_mapping
+from sigma.pySigma_QRadar_base.generate_readme_mapping import generate_mapping
 from sigma.mapping.fields import aql_field_mapping
 from sigma.mapping.logsources import aql_log_source_mapping
 from sigma.mapping.products import aql_product_mapping

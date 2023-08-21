@@ -1,5 +1,9 @@
 # `PySigma QRadar AQL`
-This is the QRadar AQL backend for [pySigma](https://github.com/SigmaHQ/pySigma) which parses and converts [Sigma](https://github.com/SigmaHQ/sigma) Rules into QRadar queries in AQL. It consists of a backend and two pipelines as describes below.
+This is the QRadar AQL backend for [pySigma](https://github.com/SigmaHQ/pySigma) 
+which parses and converts [Sigma](https://github.com/SigmaHQ/sigma) Rules into 
+QRadar queries in AQL. It consists of a backend and two pipelines as describes below.
+The project is using [pySigma_QRadar_base](https://github.com/IBM/pySigma_QRadar_base)
+submodule.
 
 
 ## Backend
@@ -42,11 +46,12 @@ sigma convert -t ibm-qradar-aql -p qradar-aql-payload rules/windows/create_remot
 ['SELECT * FROM events WHERE devicetype=12 AND LOWER("Target Process Path") LIKE \'%\\keepass.exe\'']
 ```
 
-## Develope
+## Develop
 ### Installation
-from the project root, add `pySigma_QRadar_base` submodule:
+From `sigma` directory update 
+[`pySigma_QRadar_base`](https://github.com/IBM/pySigma_QRadar_base) submodule:
 ```
-git submodule add https://github.com/IBM/pySigma_QRadar_base
+git submodule update --init --recursive
 ```
 
 ### Usage

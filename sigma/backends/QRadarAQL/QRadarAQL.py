@@ -9,9 +9,9 @@ from sigma.conditions import ConditionAND, ConditionOR, ConditionValueExpression
 from sigma.types import SigmaString, SpecialChars
 from typing import ClassVar, Tuple, Any, Union, Pattern
 
-from pySigma_QRadar_base.sigma.backends.QRadar import QRadarBackend, number_as_string
 from sigma.mapping.products import aql_product_mapping
 from sigma.mapping.services import aql_service_mapping
+from sigma.pySigma_QRadar_base.QRadarBackend import QRadarBackend, number_as_string
 
 
 class QRadarAQLBackend(QRadarBackend):

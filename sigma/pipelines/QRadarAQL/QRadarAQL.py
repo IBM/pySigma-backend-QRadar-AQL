@@ -20,10 +20,10 @@ from sigma.backends.QRadarAQL import QRadarAQLBackend
 from sigma.mapping.fields import host_field_mapping, \
     unstructured_field_mapping, unstructured_part_field_mapping, aql_field_mapping
 from sigma.mapping.logsources import aql_log_source_mapping
-from pySigma_QRadar_base.sigma.pipelines.QRadar import SetEventSourceTransformation, \
+from sigma.pySigma_QRadar_base.QRadarPipeline import SetEventSourceTransformation, \
     QRadarFieldMappingTransformation, ip_type, IPV6, IPV4
-from pySigma_QRadar_base.sigma.pipelines.QRadarFields import QRadar_fields_pipeline
-from pySigma_QRadar_base.sigma.pipelines.QRadarPayload import QRadar_payload_pipeline
+from sigma.pySigma_QRadar_base.QRadarFieldsPipeline import QRadar_fields_pipeline
+from sigma.pySigma_QRadar_base.QRadarPayloadPipeline import QRadar_payload_pipeline
 
 
 def create_ip(val, default, count, spliter):
