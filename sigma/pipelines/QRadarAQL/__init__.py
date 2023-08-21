@@ -1,6 +1,5 @@
-from .QRadarAQL_payload import QRadarAQL_payload_pipeline
-from .QRadarAQL_fields import QRadarAQL_fields_pipeline
-
+from sigma.pipelines.QRadarAQL.QRadarAQL import QRadarAQL_payload_pipeline, \
+    QRadarAQL_fields_pipeline
 
 pipelines = {
     "qradar-aql-payload": QRadarAQL_payload_pipeline,

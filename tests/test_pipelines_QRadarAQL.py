@@ -1,15 +1,18 @@
-import pytest
-from sigma.exceptions import SigmaValueError, SigmaTransformationError
+import warnings
 
-from sigma.backends.QRadarAQL import QRadarAQLBackend
+import pytest
+
 from sigma.collection import SigmaCollection
 
-from sigma.pipelines.QRadarAQL import QRadarAQL_payload_pipeline
-from sigma.pipelines.QRadarAQL import QRadarAQL_fields_pipeline
+from sigma.backends.QRadarAQL import QRadarAQLBackend
+from sigma.pipelines.QRadarAQL.QRadarAQL import QRadarAQL_payload_pipeline, \
+    QRadarAQL_fields_pipeline
+
+pipelines = [QRadarAQL_payload_pipeline, QRadarAQL_fields_pipeline]
 
 
 def test_qradar_field_mapping_unstructured_field():
-    for pipeline in [QRadarAQL_payload_pipeline, QRadarAQL_fields_pipeline]:
+    for pipeline in pipelines:
         assert QRadarAQLBackend(pipeline()).convert(
             SigmaCollection.from_yaml(f"""
                 title: Test
@@ -31,7 +34,7 @@ def test_qradar_field_mapping_unstructured_field():
 
 
 def test_qradar_field_mapping_unstructured_part_field():
-    for pipeline in [QRadarAQL_payload_pipeline, QRadarAQL_fields_pipeline]:
+    for pipeline in pipelines:
         assert QRadarAQLBackend(pipeline()).convert(
             SigmaCollection.from_yaml(f"""
                 title: Test
@@ -52,7 +55,7 @@ def test_qradar_field_mapping_unstructured_part_field():
 
 
 def test_qradar_field_mapping_unstructured_part_field_contains():
-    for pipeline in [QRadarAQL_payload_pipeline, QRadarAQL_fields_pipeline]:
+    for pipeline in pipelines:
         assert QRadarAQLBackend(pipeline()).convert(
             SigmaCollection.from_yaml(f"""
                 title: Test
@@ -75,7 +78,7 @@ def test_qradar_field_mapping_unstructured_part_field_contains():
 
 
 def test_qradar_field_mapping_unstructured_field_number_value():
-    for pipeline in [QRadarAQL_payload_pipeline, QRadarAQL_fields_pipeline]:
+    for pipeline in pipelines:
         assert QRadarAQLBackend(pipeline()).convert(
             SigmaCollection.from_yaml(f"""
                 title: Test
@@ -93,7 +96,7 @@ def test_qradar_field_mapping_unstructured_field_number_value():
 
 
 def test_qradar_list_field_mapping():
-    for pipeline in [QRadarAQL_payload_pipeline, QRadarAQL_fields_pipeline]:
+    for pipeline in pipelines:
         assert QRadarAQLBackend(pipeline()).convert(
             SigmaCollection.from_yaml(f"""
                 title: Test
@@ -114,7 +117,7 @@ def test_qradar_list_field_mapping():
 
 
 def test_qradar_concat():
-    for pipeline in [QRadarAQL_payload_pipeline, QRadarAQL_fields_pipeline]:
+    for pipeline in pipelines:
         assert QRadarAQLBackend(pipeline()).convert(
             SigmaCollection.from_yaml(f"""
                 title: Test
@@ -133,7 +136,7 @@ def test_qradar_concat():
 
 
 def test_qradar_only_log_source_detection():
-    for pipeline in [QRadarAQL_payload_pipeline, QRadarAQL_fields_pipeline]:
+    for pipeline in pipelines:
         with pytest.raises(TypeError):
             assert QRadarAQLBackend(pipeline()).convert(
                 SigmaCollection.from_yaml(f"""
@@ -150,7 +153,7 @@ def test_qradar_only_log_source_detection():
 
 
 def test_qradar_log_source_value_mapping_with_logsource_devicetype():
-    for pipeline in [QRadarAQL_payload_pipeline, QRadarAQL_fields_pipeline]:
+    for pipeline in pipelines:
         assert QRadarAQLBackend(pipeline()).convert(
             SigmaCollection.from_yaml(f"""
                 title: Test
@@ -170,8 +173,9 @@ def test_qradar_log_source_value_mapping_with_logsource_devicetype():
 
 
 def test_qradar_log_source_not_supported_value_mapping():
-    for pipeline in [QRadarAQL_payload_pipeline, QRadarAQL_fields_pipeline]:
-        with pytest.raises(SigmaValueError):
+    for pipeline in pipelines:
+        with warnings.catch_warnings(record=True) as w:
+            warnings.simplefilter("always")
             assert QRadarAQLBackend(pipeline()).convert(
                 SigmaCollection.from_yaml(f"""
                     title: Test
@@ -180,14 +184,22 @@ def test_qradar_log_source_not_supported_value_mapping():
                         category: test_category
                     detection:
                         sel:
-                            eventSource: val
+                            eventSource: 'unmapped eventSource value'
+                            eventName: 'Potential ransomware activity'
                         condition: sel
                 """)
-            )
+            ) == [
+                "SELECT * FROM events WHERE QIDNAME(qid)='Potential ransomware "
+                "activity'"
+            ]
+            assert len(w) == 1
+            warn = w[0]
+            assert issubclass(warn.category, UserWarning)
+            assert "not a supported log source type" in str(warn.message)
 
 
 def test_QRadar_wildcard_unstructured_fields():
-    for pipeline in [QRadarAQL_payload_pipeline, QRadarAQL_fields_pipeline]:
+    for pipeline in pipelines:
         assert QRadarAQLBackend(pipeline()).convert(
             SigmaCollection.from_yaml("""
                 title: Test
@@ -206,7 +218,7 @@ def test_QRadar_wildcard_unstructured_fields():
 
 
 def test_QRadar_wildcard_unstructured_fields_or_condition():
-    for pipeline in [QRadarAQL_payload_pipeline, QRadarAQL_fields_pipeline]:
+    for pipeline in pipelines:
         assert QRadarAQLBackend(pipeline()).convert(
             SigmaCollection.from_yaml("""
                 title: Test
@@ -228,7 +240,7 @@ def test_QRadar_wildcard_unstructured_fields_or_condition():
 
 
 def test_QRadar_host_fields_ipv6_to_cidr():
-    for pipeline in [QRadarAQL_payload_pipeline, QRadarAQL_fields_pipeline]:
+    for pipeline in pipelines:
         assert QRadarAQLBackend(pipeline()).convert(
             SigmaCollection.from_yaml("""
                 title: Test
@@ -251,7 +263,7 @@ def test_QRadar_host_fields_ipv6_to_cidr():
 
 
 def test_QRadar_host_fields_ipv4_to_cidr():
-    for pipeline in [QRadarAQL_payload_pipeline, QRadarAQL_fields_pipeline]:
+    for pipeline in pipelines:
         assert QRadarAQLBackend(pipeline()).convert(
             SigmaCollection.from_yaml("""
                 title: Test
@@ -269,3 +281,21 @@ def test_QRadar_host_fields_ipv4_to_cidr():
                    "SELECT * FROM events WHERE INCIDR('127.0.0.0/8', "
                    "destinationip) OR INCIDR('172.21.0.0/16', destinationip)"
                ]
+
+
+def test_QRadar_host_fields_no_ip_to_cidr():
+    for pipeline in pipelines:
+        with pytest.raises(ValueError):
+            assert QRadarAQLBackend(pipeline()).convert(
+                SigmaCollection.from_yaml("""
+                    title: Test
+                    status: test
+                    logsource:
+                        category: test_category
+                    detection:
+                        selection:
+                            DestinationIp|startswith: 
+                            - 'not ip'
+                        condition: selection
+                """)
+            )

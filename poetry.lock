@@ -246,8 +246,7 @@ files = [
 ]
 
 [package.extras]
-diagrams = ["jinja2", "railroad-diagrams"]
-
+diagrams = ["railroad-diagrams", "jinja2"]
 [[package]]
 name = "pysigma"
 version = "0.9.8"

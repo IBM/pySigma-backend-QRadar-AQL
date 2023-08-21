@@ -1,11 +1,13 @@
 # `PySigma QRadar AQL`
-This is the QRadar AQL backend for [pySigma](https://github.com/SigmaHQ/pySigma) which parses and converts [Sigma](https://github.com/SigmaHQ/sigma) Rules into QRadar queries in AQL. It consists of a backend and two pipelines as describes below.
+This is the QRadar AQL backend for [pySigma](https://github.com/SigmaHQ/pySigma) 
+which parses and converts [Sigma](https://github.com/SigmaHQ/sigma) Rules into 
+QRadar queries in AQL. It consists of a backend and two pipelines as describes below.
+The project is using [pySigma_QRadar_base](https://github.com/IBM/pySigma_QRadar_base)
+submodule.
 
 
 ## Backend
 - QRadarAQL: It provides the package `sigma.backends.QRadarAQL` with the `QRadarAQLBackend` class.
-It converts Sigma log-sources to Qradar device-type using the [Log-source Mapping](./README.md#log-source-mapping).
-
 
 ## Pipelines
 Further, it contains the following processing pipelines in `sigma.pipelines.QRadarAQL`:
@@ -17,57 +19,65 @@ Further, it contains the following processing pipelines in `sigma.pipelines.QRad
    * Regular Expression
    * Numeric Comparison
 
-
-## Installation
-Installation can be done using Sigma's plugins after installing [sigma-cli](https://github.com/SigmaHQ/sigma-cli#Installation)
+## Sigma plugin
+### Installation
+1. install [sigma-cli](https://github.com/SigmaHQ/sigma-cli#Installation)
+2. install with Sigma plugins:
 ```
 sigma plugin install ibm-qradar-aql
 ```
 
-## Usage
-
-### Usage via Sigma-CLI
+### Usage
 Convert Sigma rules to AQL by using `ibm-qradar-aql` as backend, and one of `qradar-aql-fields` and `qradar-aql-payload` as pipeline:
 ```
 sigma convert -t ibm-qradar-aql -p <qradar-aql-fields | qradar-aql-payload> <rule path> -o <output file name>
 ```
 
 ##### Input example:
+*PLEASE NOTE: you should have `Sigma rules` in your project to use the 
+following 
+command*
 ```
-sigma convert -t ibm-qradar-aql -p qradar-aql-payload rules/windows/builtin/application/win_audit_cve.yml -o output_file.txt
+sigma convert -t ibm-qradar-aql -p qradar-aql-payload rules/windows/create_remote_thread/create_remote_thread_win_keepass.yml -o output_file.txt
 ```
 
 ##### Output example:
 ```
-["SELECT * FROM events WHERE devicetype=12 AND (LOWER(UTF8(payload)) LIKE '%microsoft-windows-audit-cve%' OR LOWER(UTF8(payload)) LIKE '%audit-cve%') AND 'Event ID'=1"]
+['SELECT * FROM events WHERE devicetype=12 AND LOWER("Target Process Path") LIKE \'%\\keepass.exe\'']
 ```
 
-### Usage for developers
+## Develop
+### Installation
+From `sigma` directory update 
+[`pySigma_QRadar_base`](https://github.com/IBM/pySigma_QRadar_base) submodule:
+```
+git submodule update --init --recursive
+```
 
+### Usage
 ##### Input example:
+
 ```python
 from sigma.collection import SigmaCollection
 from sigma.backends.QRadarAQL import QRadarAQLBackend
-from sigma.pipelines.QRadarAQL import QRadarAQL_payload_pipeline, QRadarAQL_fields_pipeline
+from sigma.pipelines.QRadarAQL import QRadarAQL_fields_pipeline
+
 pipeline = QRadarAQL_fields_pipeline  # or QRadarAQL_payload_pipeline
 rule = SigmaCollection.from_yaml("""
-   logsource:
-       category: process_access
-       product: windows
-   detection:
-       selection:
-          CallTrace|startswith: 'C:\Windows\System32\ntdll.dll+'
-          GrantedAccess:
-            - '0x1028'
-            - '0x1fffff'
-       condition: selection
+    logsource:
+        product: windows
+        category: create_remote_thread
+    detection:
+        selection:
+            TargetImage|endswith: '\KeePass.exe'
+        condition: selection
 """)
-print(QRadarAQLBackend(pipeline()).convert(rule))
+print(QRadarAQLBackend(pipeline()).convert(rule)[0])
 ```
 
 ##### Output example:
 ```
-["SELECT * FROM events WHERE devicetype=12 AND LOWER('Call Trace') LIKE 'c:\windows\system32 tdll.dll+%' AND ('Granted Access' IN('0x1028', '0x1fffff'))"]
+SELECT * FROM events WHERE devicetype=12 AND LOWER("Target Process Path") LIKE '%\keepass.exe'
 ```
 
 ## QRadar Content Packs
@@ -80,7 +90,6 @@ other properties you may find in the [App Exchange](https://exchange.xforce.ibmc
 ## Mapping
 
 ### Field Mapping
-
 | <u>Sigma field</u>       | <u>QRadar AQL field</u>                                                               |
 |:-------------------------|:--------------------------------------------------------------------------------------|
 | AccessList               | Rule Name                                                                             |
@@ -93,7 +102,7 @@ other properties you may find in the [App Exchange](https://exchange.xforce.ibmc
 | AttributeValue           | Attribute Old Value, Attribute New Value                                              |
 | c-useragent              | User Agent                                                                            |
 | cs-user-agent            | User Agent                                                                            |
-| cs-username              | username                                                                              |
+| cs-username              | Username                                                                              |
 | CallTrace                | Call Trace                                                                            |
 | CallerProcessName        | Process Path                                                                          |
 | cipher                   | Ticket Encryption Type                                                                |
@@ -116,6 +125,7 @@ other properties you may find in the [App Exchange](https://exchange.xforce.ibmc
 | ImagePath                | Process Path                                                                          |
 | Imphash                  | IMP Hash                                                                              |
 | IntegrityLevel           | Integrity Level                                                                       |
+| InterfaceUuid            | Source Interface UUID                                                                 |
 | LogonType                | Logon Type                                                                            |
 | Message                  | Message                                                                               |
 | Name                     | File Path                                                                             |
@@ -128,6 +138,7 @@ other properties you may find in the [App Exchange](https://exchange.xforce.ibmc
 | Path                     | File Path                                                                             |
 | path                     | File Path                                                                             |
 | Payload                  | UTF8(payload)                                                                         |
+| payload                  | UTF8(payload)                                                                         |
 | PipeName                 | Pipe Name                                                                             |
 | ProcessId                | Process ID                                                                            |
 | ProcessName              | Process Name                                                                          |
@@ -146,16 +157,14 @@ other properties you may find in the [App Exchange](https://exchange.xforce.ibmc
 | TargetUserName           | Target Username                                                                       |
 | TaskName                 | Task Name                                                                             |
 | TicketEncryptionType     | Ticket Encryption Type                                                                |
-| UserName                 | username                                                                              |
-| Username                 | username                                                                              |
-| dst_ip                   | username                                                                              |
+| UserName                 | Username                                                                              |
+| Username                 | Username                                                                              |
 | md5                      | MD5 Hash                                                                              |
 | method                   | Method                                                                                |
 | NewTargetUserName        | Target Username                                                                       |
 | sha1                     | SHA1 Hash                                                                             |
 | sha256                   | SHA256 Hash                                                                           |
 | SourceImage              | Source Process Path                                                                   |
-| src_ip                   | sourceip                                                                              |
 | USER                     | Username                                                                              |
 | User                     | Username                                                                              |
 | userAgent                | User Agent                                                                            |
@@ -166,8 +175,10 @@ other properties you may find in the [App Exchange](https://exchange.xforce.ibmc
 | DestPort                 | destinationport                                                                       |
 | DestinationPort          | destinationport                                                                       |
 | destination.port         | destinationport                                                                       |
+| dst_ip                   | destinationip                                                                         |
 | dst_port                 | destinationport                                                                       |
 | SourcePort               | sourceport                                                                            |
+| src_ip                   | sourceip                                                                              |
 | c-uri                    | URL                                                                                   |
 | c-uri-extension          | URL                                                                                   |
 | c-uri-query              | URL                                                                                   |
@@ -186,39 +197,37 @@ other properties you may find in the [App Exchange](https://exchange.xforce.ibmc
 
 ### Log-Source Mapping
 
-#### Sigma service name mapping to QRadar device name
+#### Sigma service mapping to QRadar AQL device type
+| <u>Sigma service</u>   | <u>QRadar AQL device type name</u>                     | <u>QRadar AQL device type id</u>   |
+|:-----------------------|:-------------------------------------------------------|:-----------------------------------|
+| aaa                    | BridgewaterAAA                                         | 143                                |
+| apache                 | Apache                                                 | 10                                 |
+| auditd                 | LinuxServer                                            | 11                                 |
+| auth                   | WindowsAuthServer                                      | 12                                 |
+| clamav                 | LinuxServer                                            | 11                                 |
+| cloudtrail             | AmazonAWSCloudTrail                                    | 347                                |
+| cron                   | LinuxServer                                            | 11                                 |
+| exchange               | MicrosoftExchange                                      | 99                                 |
+| gcp.audit              | GoogleCloudAudit                                       | 449                                |
+| iis                    | IIS                                                    | 13                                 |
+| ldp                    | NetScreenIDP                                           | 17                                 |
+| lsa-server             | ISA                                                    | 191                                |
+| microsoft365portal     | Office365, Office365MessageTrace, Microsoft365Defender | 397, 452, 515                      |
+| okta                   | OktaIdentityManagement                                 | 382                                |
+| powershell             | WindowsAuthServer                                      | 12                                 |
+| rdp                    | LinuxServer, WindowsAuthServer                         | 11, 12                             |
+| smbclient-security     | LinuxServer, WindowsAuthServer                         | 11, 12                             |
+| sshd                   | LinuxServer                                            | 11                                 |
+| sudo                   | LinuxServer                                            | 11                                 |
+| syslog                 | LinuxServer, WindowsAuthServer                         | 11, 12                             |
+| sysmon                 | WindowsAuthServer                                      | 12                                 |
+| taskscheduler          | LinuxServer, WindowsAuthServer                         | 11, 12                             |
+| threat_detection       | SAPEnterpriseThreatDetection                           | 424                                |
+| windefend              | MicrosoftWindowsDefenderATP                            | 433                                |
+| wmi                    | WindowsAuthServer                                      | 12                                 |
 
-| <u>Sigma service</u>   | <u>QRadar device name</u>                              | <u>QRadar device type</u>   |
-|:-----------------------|:-------------------------------------------------------|:----------------------------|
-| aaa                    | BridgewaterAAA                                         | 143                         |
-| apache                 | Apache                                                 | 10                          |
-| auditd                 | LinuxServer                                            | 11                          |
-| auth                   | WindowsAuthServer                                      | 12                          |
-| clamav                 | LinuxServer                                            | 11                          |
-| cloudtrail             | AmazonAWSCloudTrail                                    | 347                         |
-| cron                   | LinuxServer                                            | 11                          |
-| exchange               | MicrosoftExchange                                      | 99                          |
-| gcp.audit              | GoogleCloudAudit                                       | 449                         |
-| iis                    | IIS                                                    | 13                          |
-| ldp                    | NetScreenIDP                                           | 17                          |
-| lsa-server             | ISA                                                    | 191                         |
-| microsoft365portal     | Office365, Office365MessageTrace, Microsoft365Defender | 397, 452, 515               |
-| okta                   | OktaIdentityManagement                                 | 382                         |
-| powershell             | WindowsAuthServer                                      | 12                          |
-| rdp                    | LinuxServer, WindowsAuthServer                         | 11, 12                      |
-| smbclient-security     | LinuxServer, WindowsAuthServer                         | 11, 12                      |
-| sshd                   | LinuxServer                                            | 11                          |
-| sudo                   | LinuxServer                                            | 11                          |
-| syslog                 | LinuxServer, WindowsAuthServer                         | 11, 12                      |
-| sysmon                 | WindowsAuthServer                                      | 12                          |
-| taskscheduler          | LinuxServer, WindowsAuthServer                         | 11, 12                      |
-| threat_detection       | SAPEnterpriseThreatDetection                           | 424                         |
-| windefend              | MicrosoftWindowsDefenderATP                            | 433                         |
-| wmi                    | WindowsAuthServer                                      | 12                          |
-
-#### Sigma product name mapping to QRadar device name
-
-| <u>Sigma product</u>   | <u>QRadar device name</u>                                                                                                                                                                                                                                                                                                                | <u>QRadar device type</u>                                                                                                                          |
+#### Sigma product mapping to QRadar AQL device type
+| <u>Sigma product</u>   | <u>QRadar AQL device type name</u>                                                                                                                                                                                                                                                                                                       | <u>QRadar AQL device type id</u>                                                                                                                   |
 |:-----------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------|
 | aws                    | AmazonAWSCloudTrail, AWSSecurityHub, AmazonAWSNetworkFirewall, AmazonAWSALBAccessLogs, AmazonAWSWAF, AmazonAWSKubernetes, AmazonAWSRoute53, AmazonCloudFront, AWSVerifiedAccess                                                                                                                                                          | 347, 440, 456, 460, 501, 502, 507, 516, 519                                                                                                        |
 | MicrosoftAzure         | MicrosoftAzure                                                                                                                                                                                                                                                                                                                           | 413                                                                                                                                                |
@@ -234,18 +243,23 @@ other properties you may find in the [App Exchange](https://exchange.xforce.ibmc
 | windows                | WindowsAuthServer                                                                                                                                                                                                                                                                                                                        | 12                                                                                                                                                 |
 
 ## Mapping Contribution
-Pull requests are welcome. After updating the Mapping, run [generate_readme.py](./sigma/generate_readme.py) for updating the README tables.
+Pull requests are welcome. After updating the Mapping, run 
+[generate_readme.py](./generate_readme.py) for updating the mapping tables in 
+the README file.
 
-###### [Field Mapping](./sigma/pipelines/QRadarAQL/QRadarAQL.py): field mapping from Sigma to AQL
+##### [Field Mapping](./sigma/mapping/fields.py): field mapping from Sigma to AQL
 - `field_mapping`: mapping for fields with exact mach from Sigma to AQL
 - `host_field_mapping`: mapping for host fields- values with wildcards converts to CIDR
 - `unstructured_field_mapping`: mapping for fields that their value is a substring of another field's value- equal sign ('=') will be replaced with 'LIKE' operator
 - `unstructured_part_field_mapping`: mapping for fields that are part of another field- equal sign ('=') will be replaced with 'LIKE' operator, and the value transforms to the form '{field}%{value}' 
 
-###### [Log-Source Mapping](./sigma/backends/QRadarAQL/QRadarAQL.py): mapping from Sigma log source to AQL device type id using the `qradar_log_source_mapping` taken from QRadar DataBase
-- [qradar_log_source_mapping](./sigma/pipelines/QRadarAQL/QRadarAQL.py): QRadar mapping from AQL device name to device type id, taken from  DataBase – *PLEASE DO NOT CHANGE THIS MAPPING*
-- `service_devicetype`: services mapping
-- `product_devicetype`: products mapping
+##### Log-Source Mapping: mapping from Sigma log source to AQL device type id
+- [aql_log_source_mapping](./sigma/mapping/logsources.py): AQL mapping from 
+  device type name to device type id – *PLEASE DO NOT CHANGE THIS MAPPING*
+- [aql_service_mapping](./sigma/mapping/services.py): mapping from Sigma 
+  services to AQL device type id
+- [aql_product_mapping](./sigma/mapping/products.py): mapping from Sigma products 
+  to AQL device type id
 
 ## License
 pySigma-backend-QRadar-AQL is licensed under the MIT [License](./LICENSE).

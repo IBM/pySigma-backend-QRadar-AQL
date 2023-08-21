@@ -5,26 +5,7 @@ from sigma.collection import SigmaCollection
 from sigma.exceptions import SigmaTransformationError
 
 from sigma.backends.QRadarAQL import QRadarAQLBackend
-from sigma.pipelines.QRadarAQL import QRadarAQL_payload_pipeline
-
-
-def test_QRadar_field_not_in_mapping_num_value():
-    assert QRadarAQLBackend(QRadarAQL_payload_pipeline()).convert(
-        SigmaCollection.from_yaml("""
-            title: Test
-            status: test
-            logsource:
-                product: windows
-                service: sysmon
-            detection:
-                sel:
-                    field: 3
-                condition: sel
-        """)
-    ) == [
-               "SELECT * FROM events WHERE devicetype=12 AND LOWER(UTF8(payload)) LIKE "
-               "'%field%3%'"
-           ]
+from sigma.pipelines.QRadarAQL.QRadarAQL import QRadarAQL_payload_pipeline
 
 
 def test_QRadar_field_with_spaces():
@@ -220,7 +201,7 @@ def test_QRadar_field_name_not_in_mapping_str_value():
         assert len(w) == 1
         warn = w[0]
         assert issubclass(warn.category, UserWarning)
-        assert "\'UTF8(payload)\'" in str(warn.message)
+        assert "payload search" in str(warn.message)
 
 
 def test_QRadar_field_name_not_in_mapping_num_value():
@@ -246,7 +227,7 @@ def test_QRadar_field_name_not_in_mapping_num_value():
         number_warn, payload_warn = w
         assert issubclass(payload_warn.category, UserWarning)
         assert issubclass(number_warn.category, UserWarning)
-        assert "\'UTF8(payload)\'" in str(payload_warn.message)
+        assert "payload search" in str(payload_warn.message)
         assert "numeric" in str(number_warn.message)
 
 
@@ -275,7 +256,7 @@ def test_QRadar_keywords_query():
         assert len(w) == 1
         for warn in w:
             assert issubclass(warn.category, UserWarning)
-            assert "UTF8(payload)" in str(warn.message)
+            assert "payload search" in str(warn.message)
 
 
 def test_QRadar_num_as_string_value():

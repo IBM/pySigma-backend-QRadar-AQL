@@ -3,7 +3,7 @@ from sigma.collection import SigmaCollection
 from sigma.exceptions import SigmaTransformationError
 
 from sigma.backends.QRadarAQL import QRadarAQLBackend
-from sigma.pipelines.QRadarAQL import QRadarAQL_fields_pipeline
+from sigma.pipelines.QRadarAQL.QRadarAQL import QRadarAQL_fields_pipeline
 
 
 def test_QRadar_in_expression_field_name_not_in_mapping_query_exception():
