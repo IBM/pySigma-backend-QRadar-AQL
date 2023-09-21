@@ -120,6 +120,7 @@ other properties you may find in the [App Exchange](https://exchange.xforce.ibmc
 | Hashes                   | CONCAT(MD5=, MD5 Hash , SHA1=, SHA1 Hash , SHA256=, SHA256 Hash , IMPHASH=, IMP HASH) |
 | HostApplication          | Process Path                                                                          |
 | HostName                 | Hostname                                                                              |
+| Initiated                | Initiated                                                                             |
 | Image                    | Process Path, Process Name                                                            |
 | ImageName                | Process Name                                                                          |
 | ImagePath                | Process Path                                                                          |
@@ -164,6 +165,7 @@ other properties you may find in the [App Exchange](https://exchange.xforce.ibmc
 | NewTargetUserName        | Target Username                                                                       |
 | sha1                     | SHA1 Hash                                                                             |
 | sha256                   | SHA256 Hash                                                                           |
+| SourceFilename           | filename                                                                              |
 | SourceImage              | Source Process Path                                                                   |
 | USER                     | Username                                                                              |
 | User                     | Username                                                                              |
