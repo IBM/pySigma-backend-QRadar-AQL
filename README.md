@@ -6,10 +6,10 @@ The project is using [pySigma_QRadar_base](https://github.com/IBM/pySigma_QRadar
 submodule.
 
 
-## Backend
+# Backend
 - QRadarAQL: It provides the package `sigma.backends.QRadarAQL` with the `QRadarAQLBackend` class.
 
-## Pipelines
+# Pipelines
 Further, it contains the following processing pipelines in `sigma.pipelines.QRadarAQL`:
 - QRadarAQL_fields_pipeline: Supports only the `Sigma fields` in the [Field Mapping](./README.md#field-mapping).
 - QRadarAQL_payload_pipeline: Uses `UTF8(payload)` instead of fields unsupported by the [Field Mapping](./README.md#field-mapping). For unsupported fields, the following value types are not supported–
@@ -19,21 +19,39 @@ Further, it contains the following processing pipelines in `sigma.pipelines.QRad
    * Regular Expression
    * Numeric Comparison
 
+# Installation
+
+## PyPI
+```
+pip install ibm-qradar-aql
+```
+
 ## Sigma plugin
-### Installation
+
+### Sigma CLI
 1. install [sigma-cli](https://github.com/SigmaHQ/sigma-cli#Installation)
 2. install with Sigma plugins:
 ```
 sigma plugin install ibm-qradar-aql
 ```
 
-### Usage
+### pySigma
+```python
+from sigma.plugins import SigmaPluginDirectory
+
+plugins = SigmaPluginDirectory.default_plugin_directory()
+plugins.get_plugin_by_id("ibm-qradar-aql").install()
+```
+
+## Usage
 Convert Sigma rules to AQL by using `ibm-qradar-aql` as backend, and one of `qradar-aql-fields` and `qradar-aql-payload` as pipeline:
+
+### Sigma CLI
 ```
 sigma convert -t ibm-qradar-aql -p <qradar-aql-fields | qradar-aql-payload> <rule path> -o <output file name>
 ```
 
-##### Input example:
+#### Input example:
 *PLEASE NOTE: you should have `Sigma rules` in your project to use the 
 following 
 command*
@@ -41,26 +59,18 @@ command*
 sigma convert -t ibm-qradar-aql -p qradar-aql-payload rules/windows/create_remote_thread/create_remote_thread_win_keepass.yml -o output_file.txt
 ```
 
-##### Output example:
+#### Output example:
 ```
 ['SELECT * FROM events WHERE devicetype=12 AND LOWER("Target Process Path") LIKE \'%\\keepass.exe\'']
 ```
 
-## Develop
-### Installation
-From `sigma` directory update 
-[`pySigma_QRadar_base`](https://github.com/IBM/pySigma_QRadar_base) submodule:
-```
-git submodule update --init --recursive
-```
-
-### Usage
-##### Input example:
+### pySigma
+#### Input example:
 
 ```python
 from sigma.collection import SigmaCollection
 from sigma.backends.QRadarAQL import QRadarAQLBackend
-from sigma.pipelines.QRadarAQL import QRadarAQL_fields_pipeline
+from sigma.pipelines.QRadarAQL import QRadarAQL_fields_pipeline, QRadarAQL_payload_pipeline
 
 pipeline = QRadarAQL_fields_pipeline  # or QRadarAQL_payload_pipeline
 rule = SigmaCollection.from_yaml("""
@@ -75,21 +85,30 @@ rule = SigmaCollection.from_yaml("""
 print(QRadarAQLBackend(pipeline()).convert(rule)[0])
 ```
 
-##### Output example:
+#### Output example:
 ```
 SELECT * FROM events WHERE devicetype=12 AND LOWER("Target Process Path") LIKE '%\keepass.exe'
 ```
 
-## QRadar Content Packs
+# Develop
+This project is using 
+[pySigma_QRadar_base](https://github.com/IBM/pySigma_QRadar_base) submodule.
+After cloning the project, make sure to update the submodule from the `sigma` directory 
+by running:
+```
+git submodule update --init --recursive
+```
+
+# QRadar Content Packs
 - [Properties Dictionary](https://exchange.xforce.ibmcloud.com/hub/extension/73f46b27280d30a4b8ec4685da391b1c) (required)
 - [Windows Custom Properties](https://exchange.xforce.ibmcloud.com/hub/extension/IBMQRadar:MicrosoftWindowsCustomProperties) (recommended)
 - [Linux Custom Properties](https://exchange.xforce.ibmcloud.com/hub/extension/427f5d543cb917916619e6abafc26404) (recommended)
 
 other properties you may find in the [App Exchange](https://exchange.xforce.ibmcloud.com/hub)
 
-## Mapping
+# Mapping
 
-### Field Mapping
+## Field Mapping
 | <u>Sigma field</u>       | <u>QRadar AQL field</u>                                                               |
 |:-------------------------|:--------------------------------------------------------------------------------------|
 | AccessList               | Rule Name                                                                             |
@@ -197,9 +216,9 @@ other properties you may find in the [App Exchange](https://exchange.xforce.ibmc
 | a4                       | Command                                                                               |
 | a5                       | Command                                                                               |
 
-### Log-Source Mapping
+## Log-Source Mapping
 
-#### Sigma service mapping to QRadar AQL device type
+### Sigma service mapping to QRadar AQL device type
 | <u>Sigma service</u>   | <u>QRadar AQL device type name</u>                     | <u>QRadar AQL device type id</u>   |
 |:-----------------------|:-------------------------------------------------------|:-----------------------------------|
 | aaa                    | BridgewaterAAA                                         | 143                                |
@@ -228,7 +247,7 @@ other properties you may find in the [App Exchange](https://exchange.xforce.ibmc
 | windefend              | MicrosoftWindowsDefenderATP                            | 433                                |
 | wmi                    | WindowsAuthServer                                      | 12                                 |
 
-#### Sigma product mapping to QRadar AQL device type
+### Sigma product mapping to QRadar AQL device type
 | <u>Sigma product</u>   | <u>QRadar AQL device type name</u>                                                                                                                                                                                                                                                                                                       | <u>QRadar AQL device type id</u>                                                                                                                   |
 |:-----------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------|
 | aws                    | AmazonAWSCloudTrail, AWSSecurityHub, AmazonAWSNetworkFirewall, AmazonAWSALBAccessLogs, AmazonAWSWAF, AmazonAWSKubernetes, AmazonAWSRoute53, AmazonCloudFront, AWSVerifiedAccess                                                                                                                                                          | 347, 440, 456, 460, 501, 502, 507, 516, 519                                                                                                        |
@@ -244,18 +263,20 @@ other properties you may find in the [App Exchange](https://exchange.xforce.ibmc
 | sql                    | MicrosoftSQL                                                                                                                                                                                                                                                                                                                             | 101                                                                                                                                                |
 | windows                | WindowsAuthServer                                                                                                                                                                                                                                                                                                                        | 12                                                                                                                                                 |
 
-## Mapping Contribution
-Pull requests are welcome. After updating the Mapping, run 
+# Mapping Contribution
+Pull requests are welcome. After updating the Mapping, please run 
 [generate_readme.py](./generate_readme.py) for updating the mapping tables in 
 the README file.
 
-##### [Field Mapping](./sigma/mapping/fields.py): field mapping from Sigma to AQL
+### [Field Mapping](./sigma/mapping/fields.py):
+####field mapping from Sigma to AQL
 - `field_mapping`: mapping for fields with exact mach from Sigma to AQL
 - `host_field_mapping`: mapping for host fields- values with wildcards converts to CIDR
 - `unstructured_field_mapping`: mapping for fields that their value is a substring of another field's value- equal sign ('=') will be replaced with 'LIKE' operator
 - `unstructured_part_field_mapping`: mapping for fields that are part of another field- equal sign ('=') will be replaced with 'LIKE' operator, and the value transforms to the form '{field}%{value}' 
 
-##### Log-Source Mapping: mapping from Sigma log source to AQL device type id
+### Log-Source Mapping:
+####mapping from Sigma log source to AQL device type id
 - [aql_log_source_mapping](./sigma/mapping/logsources.py): AQL mapping from 
   device type name to device type id – *PLEASE DO NOT CHANGE THIS MAPPING*
 - [aql_service_mapping](./sigma/mapping/services.py): mapping from Sigma 
@@ -263,8 +284,8 @@ the README file.
 - [aql_product_mapping](./sigma/mapping/products.py): mapping from Sigma products 
   to AQL device type id
 
-## License
+# License
 pySigma-backend-QRadar-AQL is licensed under the MIT [License](./LICENSE).
 
-## Maintainers
+# Maintainers
 * [Cyber Center of Excellence - IBM](https://github.com/noaakl/)
