@@ -90,8 +90,8 @@ def test_QRadar_or_and_expression(aql_backend: QRadarAQLBackend):
                 condition: 1 of sel*
         """)
     ) == [
-               "SELECT * FROM events WHERE fieldA='valueA1' AND fieldB='valueB1'"
-               " OR fieldA='valueA2' AND fieldB='valueB2'"
+               "SELECT * FROM events WHERE (fieldA='valueA1' AND fieldB='valueB1')"
+               " OR (fieldA='valueA2' AND fieldB='valueB2')"
            ]
 
 
@@ -114,7 +114,6 @@ def test_QRadar_in_expression(aql_backend: QRadarAQLBackend):
     ) == [
         "SELECT * FROM events WHERE fieldA='valueA' OR fieldA='valueB' OR LOWER("
         "fieldA) LIKE 'valuec%'"
-               # "SELECT * FROM events WHERE fieldA IN('valueA', 'valueB', 'valueC%')"
            ]
 
 
