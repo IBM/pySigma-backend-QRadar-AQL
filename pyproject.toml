@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pySigma-backend-QRadar-AQL"
-version = "0.2.7"
+version = "0.2.8"
 description = "pySigma QRadarAQL backend"
 authors = ["IBM <noaakless@gmail.com>"]
 license = "MIT"
