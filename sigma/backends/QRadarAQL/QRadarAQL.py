@@ -232,5 +232,9 @@ class QRadarAQLBackend(QRadarBackend):
         match_device_type = self.device_type_expression(
             rule=rule, device_type_field_name='devicetype', device_types=device_types
         )
-        qradar_query = f'SELECT {fields} FROM {table} WHERE {match_device_type}{query}'
+        query = (
+            f'({query})' if self.use_parenthesis(match_device_type, query) else query
+        )
+        full_query = match_device_type.format(query=query)
+        qradar_query = f'SELECT {fields} FROM {table} WHERE {full_query}'
         return qradar_query

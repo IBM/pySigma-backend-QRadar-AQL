@@ -339,3 +339,91 @@ def test_QRadar_escaping_regex(aql_backend: QRadarAQLBackend):
                "SELECT * FROM events WHERE Command MATCHES '.[a-zA-Z0-9]{1,"
                "6}.[ |'']{1}'"
            ]
+
+
+def test_QRadar_parenthesis_without_device_type(aql_backend: QRadarAQLBackend):
+    assert aql_backend.convert(
+        SigmaCollection.from_yaml("""
+            title: Test
+            status: test
+            logsource:
+                category: test_category
+                service: test_service
+            detection:
+                sel1:
+                    fieldA: valueA
+                sel2:
+                    fieldB: valueB
+                    fieldC: valueC
+                condition: sel1 or sel2
+        """)
+    ) == [
+               "SELECT * FROM events WHERE fieldA='valueA' OR (fieldB='valueB' AND "
+               "fieldC='valueC')"
+           ]
+
+
+def test_QRadar_parenthesis_with_device_type(aql_backend: QRadarAQLBackend):
+    assert aql_backend.convert(
+        SigmaCollection.from_yaml("""
+            title: Test
+            status: test
+            logsource:
+                product: windows
+                category: process_creation
+            detection:
+                sel1:
+                    fieldA: valueA
+                sel2:
+                    fieldB: valueB
+                    fieldC: valueC
+                condition: sel1 or sel2
+        """)
+    ) == [
+               "SELECT * FROM events WHERE devicetype=12 AND (fieldA='valueA' OR ("
+               "fieldB='valueB' AND fieldC='valueC'))"
+           ]
+
+
+def test_QRadar_no_parenthesis_with_device_type(aql_backend: QRadarAQLBackend):
+    assert aql_backend.convert(
+        SigmaCollection.from_yaml("""
+            title: Test
+            status: test
+            logsource:
+                product: windows
+                category: process_creation
+            detection:
+                sel:
+                    fieldB: valueB
+                    fieldC: valueC
+                condition: sel
+        """)
+    ) == [
+               "SELECT * FROM events WHERE devicetype=12 AND fieldB='valueB' AND "
+               "fieldC='valueC'"
+           ]
+
+
+def test_QRadar_nested_parenthesis_with_device_type(aql_backend: QRadarAQLBackend):
+    assert aql_backend.convert(
+        SigmaCollection.from_yaml("""
+            title: Test
+            status: test
+            logsource:
+                product: windows
+                category: process_creation
+            detection:
+                sel1:
+                    fieldA: valueA
+                sel2:
+                    fieldB: valueB
+                    fieldC: valueC
+                sel3:
+                    fieldD: valueD
+                condition: sel1 and (sel2 or sel3)
+        """)
+    ) == [
+               "SELECT * FROM events WHERE devicetype=12 AND fieldA='valueA' AND (("
+               "fieldB='valueB' AND fieldC='valueC') OR fieldD='valueD')"
+           ]
