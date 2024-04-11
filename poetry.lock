@@ -249,7 +249,7 @@ files = [
 diagrams = ["railroad-diagrams", "jinja2"]
 [[package]]
 name = "pysigma"
-version = "0.9.8"
+version = "0.11"
 description = "Sigma rule processing and conversion tools"
 optional = false
 python-versions = ">=3.8,<4.0"

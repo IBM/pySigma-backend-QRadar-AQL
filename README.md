@@ -269,14 +269,14 @@ Pull requests are welcome. After updating the Mapping, please run
 the README file.
 
 ### [Field Mapping](./sigma/mapping/fields.py):
-####field mapping from Sigma to AQL
+#### field mapping from Sigma to AQL
 - `field_mapping`: mapping for fields with exact mach from Sigma to AQL
 - `host_field_mapping`: mapping for host fields- values with wildcards converts to CIDR
 - `unstructured_field_mapping`: mapping for fields that their value is a substring of another field's value- equal sign ('=') will be replaced with 'LIKE' operator
 - `unstructured_part_field_mapping`: mapping for fields that are part of another field- equal sign ('=') will be replaced with 'LIKE' operator, and the value transforms to the form '{field}%{value}' 
 
 ### Log-Source Mapping:
-####mapping from Sigma log source to AQL device type id
+#### mapping from Sigma log source to AQL device type id
 - [aql_log_source_mapping](./sigma/mapping/logsources.py): AQL mapping from 
   device type name to device type id – *PLEASE DO NOT CHANGE THIS MAPPING*
 - [aql_service_mapping](./sigma/mapping/services.py): mapping from Sigma 
