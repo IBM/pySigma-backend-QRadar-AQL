@@ -1,3 +1,4 @@
 [submodule "sigma/pySigma_QRadar_base"]
 	path = sigma/pySigma_QRadar_base
 	url = https://github.com/IBM/pySigma_QRadar_base
+	branch = main
