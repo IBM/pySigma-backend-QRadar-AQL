@@ -275,3 +275,24 @@ def test_QRadar_num_as_string_value():
     ) == [
                "SELECT * FROM events WHERE LOWER(UTF8(payload)) LIKE '%fieldname%1%'"
            ]
+
+def test_QRadar_all_modifier():
+    assert QRadarAQLBackend(QRadarAQL_payload_pipeline()).convert(
+        SigmaCollection.from_yaml("""
+            title: Test
+            status: test
+            logsource:
+                category: test_category
+                product: test_product
+            detection:
+                sel:
+                    commandline|contains|all:
+                        - 'test 1'
+                        - 'test 2'
+                condition: sel
+        """)
+    ) == [
+                "SELECT * FROM events WHERE LOWER(UTF8(payload)) LIKE '%test 1%' AND "
+                "LOWER(UTF8(payload)) LIKE '%test 2%'"
+         ]
+

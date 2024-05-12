@@ -126,7 +126,7 @@ class UnstructuredFieldsTransformation(DetectionItemTransformation):
                         value[0] = SigmaString(str(value[0]).lower())
             return SigmaDetectionItem(
                 field=field,
-                modifiers=[SigmaContainsModifier],
+                modifiers=detection_item.modifiers + [SigmaContainsModifier],
                 value=value,
             )
         return detection_item
