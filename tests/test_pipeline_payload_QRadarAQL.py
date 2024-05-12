@@ -292,6 +292,7 @@ def test_QRadar_all_modifier():
                 condition: sel
         """)
     ) == [
-                "SELECT * FROM events WHERE LOWER(UTF8(payload)) LIKE '%test 1%' AND LOWER(UTF8(payload)) LIKE '%test 2%'"
+                "SELECT * FROM events WHERE LOWER(UTF8(payload)) LIKE '%test 1%' AND "
+                "LOWER(UTF8(payload)) LIKE '%test 2%'"
          ]
 
