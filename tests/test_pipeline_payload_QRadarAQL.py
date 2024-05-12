@@ -276,6 +276,7 @@ def test_QRadar_num_as_string_value():
                "SELECT * FROM events WHERE LOWER(UTF8(payload)) LIKE '%fieldname%1%'"
            ]
 
+
 def test_QRadar_all_modifier():
     assert QRadarAQLBackend(QRadarAQL_payload_pipeline()).convert(
         SigmaCollection.from_yaml("""
