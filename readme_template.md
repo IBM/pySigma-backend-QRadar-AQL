@@ -23,7 +23,7 @@ Further, it contains the following processing pipelines in `sigma.pipelines.QRad
 
 ## PyPI
 ```
-pip install ibm-qradar-aql
+pip install pySigma-backend-QRadar-AQL
 ```
 
 ## Sigma plugin
